@@ -1,4 +1,4 @@
-const fs =  require('fs');
+const fs = require('fs');
 
 const trips = JSON.parse(fs.readFileSync('./data/trips.json', 'utf8'));
 
