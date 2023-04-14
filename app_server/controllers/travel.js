@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+//const request = require('request');
 const trips = mongoose.model('trips');
 
 /* GET travel view */

@@ -6,20 +6,35 @@ const logger = require('morgan');
 
 const hbs = require('hbs');
 require('./app_api/models/db');
+//require('./app_api/config/passport');
 
 
 const indexRouter = require('./app_server/routes/index');
 const usersRouter = require('./app_server/routes/users');
 const travelRouter = require('./app_server/routes/travel');
+const travelCtrl = require('./app_server/controllers/travel');
 const apiRouter = require('./app_api/routes/index');
 
 const app = express();
+
+app.use(express.json());
+
+const cors = require('cors');
+
+const corsOption = {
+  origin: 'http://localhost:4200',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
 app.get('/', indexRouter);
 app.get('/contact', (req, res) => res.render('contact', {contactSelected: req.path == '/contact'}));
 app.get('/rooms', (req, res) => res.render('rooms', {roomsSelected: req.path == '/rooms'}));
 app.get('/meals', (req, res) => res.render('meals', {mealsSelected: req.path == '/meals'}));
 app.get('/news', (req, res) => res.render('news', {newsSelected: req.path == '/news'}));
 app.get('/about', (req, res) => res.render('about', {aboutSelected: req.path == '/about'}));
+app.get('/travel', travelCtrl.travel);
+app.use('/api', cors(corsOption), apiRouter);
 
 
 
@@ -27,7 +42,7 @@ app.get('/about', (req, res) => res.render('about', {aboutSelected: req.path == 
 app.set('views', path.join(__dirname, 'app_server', 'views'));
 
 // register handlebars partials (https://www.npmjs.com/package/hbs)
-hbs.registerPartials(path.join(__dirname, 'app_server', 'views/partials'));
+hbs.registerPartials(path.join(__dirname, 'app_server', 'views', 'partials'));
 
 app.set('view engine', 'hbs');
 
@@ -36,6 +51,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
